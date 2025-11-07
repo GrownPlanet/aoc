@@ -1,0 +1,33 @@
+2,4,1,3,7,5,4,1,1,3,0,3,5,5,3,0
+
+A = ?
+B = 0
+C = 0
+
+B = A & 0b111
+B = B ^ 3
+C = A >> B
+B = B ^ C
+B = B ^ 3
+A = A >> 3
+out (B & 0b111)
+if a != 0: jump 0
+
+/*
+* 0 -> adv -> combo   -> A / (2^op) -> A
+* 1 -> bxl -> literal -> XOR B op   -> B
+* 2 -> bst -> combo   -> op % 8     -> B
+* 3 -> jnz -> literal -> A == 0 ? {} : { inst_p = op } -> N/A
+* 4 -> bxc -> N/A     -> XOR B C    -> B
+* 5 -> out -> combo   -> op % 8     -> print
+* 6 -> bdv -> combo   -> A / (2^op) -> B
+* 7 -> cdv -> combo   -> A / (2^op) -> C
+*
+*
+* combo:
+* 0..3 -> 0..3
+* 4    -> A
+* 5    -> B
+* 6    -> C
+* 7    -> invalid prog
+*/
