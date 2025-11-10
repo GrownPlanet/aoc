@@ -1,4 +1,9 @@
 (executable
- (public_name aoc)
- (name main)
- (libraries aoc))
+ (public_name p1)
+ (name p1)
+ (package aoc))
+
+(executable
+ (public_name p2)
+ (name p2)
+ (package aoc))
