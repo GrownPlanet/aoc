@@ -7,8 +7,6 @@ let parse line =
   | [ dir; len; _ ] -> (dir, int_of_string len)
   | _ -> invalid_arg "invalid line"
 
-let sign num = if num < 0 then -1 else 1
-
 let calculate_area lines =
   let rec helper lines area_acc line_acc x y =
     match lines with

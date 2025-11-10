@@ -5,8 +5,6 @@ let parse line =
   Scanf.sscanf line "%[UDLR] %d (#%5[0-9a-f]%d)" (fun _ _ code dir ->
       (dir, int_of_string ("0x" ^ code)))
 
-let sign num = if num < 0 then -1 else 1
-
 let calculate_area lines =
   let rec helper lines area_acc line_acc x y =
     match lines with
