@@ -7,7 +7,7 @@ let parse_line line =
   Scanf.sscanf line "%[LR]%d" (fun dir count ->
       { dir = String.get dir 0; count })
 
-let put_in_range num =
+let normalize num =
   let v = num mod 100 in
   if v < 0 then 100 + v else v
 
@@ -18,12 +18,12 @@ let rotate position dir count =
     | 'R' -> position + count
     | _ -> invalid_arg "neither left nor right"
   in
-  put_in_range new_position
+  normalize new_position
 
 let solve (position, acc) offset =
   let new_position = rotate position offset.dir offset.count in
-  let v = if new_position = 0 then 1 else 0 in
-  (new_position, acc + v)
+  let is_zero = if new_position = 0 then 1 else 0 in
+  (new_position, acc + is_zero)
 
 let () =
   let _, res =

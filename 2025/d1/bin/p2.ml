@@ -1,35 +1,36 @@
 let read_file filename =
   In_channel.with_open_text filename In_channel.input_lines
 
-type rotation = { dir : char; amount : int }
+type rotation = { dir : string; amount : int }
 
 let parse_line line =
-  Scanf.sscanf line "%[LR]%d" (fun dir amount ->
-      { dir = String.get dir 0; amount })
+  Scanf.sscanf line "%[LR]%d" (fun dir amount -> { dir; amount })
 
-let put_in_range num =
-  let wnum = num mod 100 in
-  if num > 99 then (wnum, num / 100)
-  else if num < 0 then
-    ((100 + wnum) mod 100, (-num / 100) + 1 - ((100 + wnum) / 100))
-  else (num, 0)
+let normalize num =
+  let m = 100 in
+  let nnum = (m + (num mod m)) mod m in
+  let wraps = abs (num - nnum) / m in
+  (nnum, wraps)
 
 let rotate position dir amount =
-  let new_position, over0 =
+  let new_position, wraps =
     (match dir with
-      | 'L' -> position - amount
-      | 'R' -> position + amount
+      | "L" -> position - amount
+      | "R" -> position + amount
       | _ -> invalid_arg "not left or right")
-    |> put_in_range
+    |> normalize
   in
-  let over0 = if position = 0 && dir = 'L' then over0 - 1 else over0 in
-  let over0 = if new_position = 0 && dir = 'L' then over0 + 1 else over0 in
-  (new_position, over0)
+  (* only count arraving on 0 as a rotation, this already works when going right *)
+  let offset =
+    if position = 0 && dir = "L" then -1
+    else if new_position = 0 && dir = "L" then 1
+    else 0
+  in
+  (new_position, wraps + offset)
 
 let solve (position, acc) offset =
-  let new_position, over0count = rotate position offset.dir offset.amount in
-  let is0 = if new_position = 0 then 1 else 0 in
-  (new_position, over0count + (is0 * 0) + acc)
+  let new_position, wraps = rotate position offset.dir offset.amount in
+  (new_position, wraps + acc)
 
 let () =
   let _, res =
