@@ -16,18 +16,17 @@ let rotate position dir count =
     match dir with
     | 'L' -> position - count
     | 'R' -> position + count
-    | _ -> invalid_arg "not left or right"
+    | _ -> invalid_arg "neither left nor right"
   in
   put_in_range new_position
 
-let rec solve position list =
-  match list with
-  | [] -> if position = 0 then 1 else 0
-  | r :: t ->
-      let new_position = rotate position r.dir r.count in
-      let v = if new_position = 0 then 1 else 0 in
-      v + solve new_position t
+let solve (position, acc) offset =
+  let new_position = rotate position offset.dir offset.count in
+  let v = if new_position = 0 then 1 else 0 in
+  (new_position, acc + v)
 
 let () =
-  read_file "input.txt" |> List.map parse_line |> solve 50
-  |> Printf.printf "%d\n"
+  let _, res =
+    read_file "input.txt" |> List.map parse_line |> List.fold_left solve (50, 0)
+  in
+  Printf.printf "%d\n" res

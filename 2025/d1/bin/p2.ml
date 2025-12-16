@@ -9,8 +9,7 @@ let parse_line line =
 
 let put_in_range num =
   let wnum = num mod 100 in
-  if num > 99 then
-    (wnum, num / 100)
+  if num > 99 then (wnum, num / 100)
   else if num < 0 then
     ((100 + wnum) mod 100, (-num / 100) + 1 - ((100 + wnum) / 100))
   else (num, 0)
@@ -27,14 +26,13 @@ let rotate position dir amount =
   let over0 = if new_position = 0 && dir = 'L' then over0 + 1 else over0 in
   (new_position, over0)
 
-let rec solve position list =
-  match list with
-  | [] -> if position = 0 then 1 else 0
-  | r :: t ->
-      let new_position, over0count = rotate position r.dir r.amount in
-      let is0 = if new_position = 0 then 1 else 0 in
-      over0count + (is0 * 0) + solve new_position t
+let solve (position, acc) offset =
+  let new_position, over0count = rotate position offset.dir offset.amount in
+  let is0 = if new_position = 0 then 1 else 0 in
+  (new_position, over0count + (is0 * 0) + acc)
 
 let () =
-  read_file "input.txt" |> List.map parse_line |> solve 50
-  |> Printf.printf "%d\n"
+  let _, res =
+    read_file "input.txt" |> List.map parse_line |> List.fold_left solve (50, 0)
+  in
+  Printf.printf "%d\n" res
