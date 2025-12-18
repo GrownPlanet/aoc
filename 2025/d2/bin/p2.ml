@@ -6,23 +6,23 @@ let parse_range range =
   | [ a; b ] -> (int_of_string a, int_of_string b)
   | _ -> invalid_arg "invalid range"
 
-let rec is_equal list =
+let rec all_equal list =
   match list with
-  | a :: b :: r -> if a <> b then false else is_equal (b :: r)
-  | _ -> true
+  | a :: b :: r -> a = b && all_equal (b :: r)
+  | [] | [_] -> true
 
-let check_subset size string =
+let check_subset string size =
   let len = String.length string in
   if len mod size != 0 then false
   else
     let subsets =
       List.init (len / size) (fun i -> String.sub string (i * size) size)
     in
-    is_equal subsets
+    all_equal subsets
 
 let rec check_all_subsets string mid size =
   if size > mid then false
-  else if check_subset size string then true
+  else if check_subset string size then true
   else check_all_subsets string mid (size + 1)
 
 let is_invalid a =
@@ -40,5 +40,10 @@ let () =
   read_file "input.txt"
   |> List.concat_map (fun l ->
       String.split_on_char ',' l |> List.map parse_range)
-  |> List.map (check_range 0)
-  |> List.fold_left ( + ) 0 |> Printf.printf "%d\n"
+  (* multithreaded *)
+  |> List.map (fun chunk -> Domain.spawn (fun () -> (check_range 0) chunk))
+  |> List.map Domain.join
+  (* or single threaded *)
+  (* |> List.map (check_range 0) *)
+  |> List.fold_left ( + ) 0 
+  |> Printf.printf "%d\n"
