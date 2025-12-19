@@ -3,7 +3,7 @@ let read_input filename =
   |> List.map (fun str -> Array.init (String.length str) (String.get str))
   |> Array.of_list
 
-let cound_at map =
+let count_at map =
   Array.fold_left
     (fun acc a ->
       acc
@@ -28,19 +28,17 @@ let can_be_picked_up x y map =
     if neighbors < 4 then true else false
 
 let update_map map =
-  Array.init (Array.length map) (fun y ->
-      Array.init
-        (Array.length map.(0))
-        (fun x -> if can_be_picked_up x y map then '.' else '@'))
+  Array.mapi
+    (fun y row ->
+      Array.mapi (fun x _ -> if can_be_picked_up x y map then '.' else '@') row)
+    map
 
 let rec solve map =
-  let old_count = cound_at map in
   let new_map = update_map map in
-  let new_count = cound_at new_map in
-  if new_count == old_count then new_count else solve new_map
+  if map = new_map then count_at new_map else solve new_map
 
 let () =
   let map = read_input "input.txt" in
-  let initial_count = cound_at map in
+  let initial_count = count_at map in
   let reduced_count = solve map in
   Printf.printf "%d\n" (initial_count - reduced_count)
