@@ -16,7 +16,7 @@ let rec find_largest first second nums =
 let solve bank =
   let a, b =
     List.init (String.length bank) (String.get bank)
-    |> find_largest (int_of_char (String.get bank 0)) 0
+    |> find_largest 0 0
   in
   (a * 10) + b
 

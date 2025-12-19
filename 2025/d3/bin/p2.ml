@@ -27,7 +27,7 @@ let rec find_largest largest nums =
 let solve bank =
   let bank_list = List.init (String.length bank) (String.get bank) in
   let output =
-    find_largest (List.map int_of_char (List.take length bank_list)) bank_list
+    find_largest (List.init length (fun _ -> 0)) bank_list
   in
   let res = int_of_list output in
   res
