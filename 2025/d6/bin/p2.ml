@@ -3,7 +3,7 @@ let read_input filename =
 
 let rec transpose list =
   match list with
-  | [] | [] :: _ -> []
+  | [] :: _ -> []
   | l -> List.(map hd l :: transpose (map tl l))
 
 let split_input inp =
@@ -18,12 +18,12 @@ let opp_to_func opp =
 let begin_opp opp =
   match opp with "*" -> 1 | "+" -> 0 | _ -> invalid_arg "invalid opperation"
 
-let rec split_double_nl acc acc2 list =
+let rec split_double_nl ll_acc l_acc list =
   match list with
   | e :: r ->
-      if e = "" then split_double_nl (acc2 :: acc) [] r
-      else split_double_nl acc (e :: acc2) r
-  | [] -> acc2 :: acc
+      if e = "" then split_double_nl (l_acc :: ll_acc) [] r
+      else split_double_nl ll_acc (e :: l_acc) r
+  | [] -> l_acc :: ll_acc
 
 let parse_num_map num_map =
   List.map
