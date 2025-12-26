@@ -25,6 +25,7 @@ Y1                       |
 Y2      variables        | solutions
 ..                       | 
 *)
+
 type simplex_alg = {
   z : float array;
   z_solution : float;
@@ -32,22 +33,6 @@ type simplex_alg = {
   variables : float array array;
 }
 
-(* DEBUG; remove *)
-(*
-let print_simplex_alg simplex =
-  Array.iter (Printf.printf "%d\t") simplex.z;
-  Printf.printf "\n%d\n" simplex.z_solution;
-  Array.iter
-    (fun row ->
-      Array.iter (fun cell -> Printf.printf "%d\t" cell) row;
-      print_newline ())
-    simplex.variables;
-  Array.iter (Printf.printf "%d\t") simplex.solutions;
-  print_newline ();
-  print_newline ()
-*)
-
-(* solved using linear programming and the simplex algorithm *)
 let create_simplex variables solutions =
   let vc = List.length variables in
   let sc = Array.length solutions in
@@ -57,7 +42,7 @@ let create_simplex variables solutions =
     else 0.
   in
   let variables =
-    Array.init sc (fun r -> Array.init (vc * 2) (fun c -> get_cell_value r c))
+    Array.init_matrix sc (vc * 2) (fun r c -> get_cell_value r c)
   in
   let z =
     Array.fold_left (Array.map2 ( +. ))
@@ -71,7 +56,6 @@ let parse_line line =
   let split = String.split_on_char ' ' line in
   let buttons, joltages = List.tl split |> parse_split [] in
   let s = create_simplex buttons joltages in
-  (* print_simplex_alg s; *)
   s
 
 let rec max_indecies mi ci arr =
@@ -140,9 +124,7 @@ let rec solve_simplex simplex =
   let piv = find_pivot simplex in
   match piv with
   | Some (pr, pc) ->
-      (* Printf.printf "%d %d\n" pr pc; print_newline (); *)
       let simplex = develop pr pc simplex in
-      (* print_simplex_alg simplex; *)
       solve_simplex simplex
   | None ->
     Array.iter (Printf.printf "%f ") simplex.solutions;

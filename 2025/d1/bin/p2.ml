@@ -20,7 +20,7 @@ let rotate position dir amount =
       | _ -> invalid_arg "not left or right")
     |> normalize
   in
-  (* only count arraving on 0 as a rotation, this already works when going right *)
+  (* only count arriving on 0 as a rotation, this already works when going right *)
   let offset =
     if position = 0 && dir = "L" then -1
     else if new_position = 0 && dir = "L" then 1
