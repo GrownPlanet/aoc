@@ -2,4 +2,5 @@
  (public_name p1))
 
 (executable
- (public_name p2))
+ (public_name p2)
+ (libraries z3))
